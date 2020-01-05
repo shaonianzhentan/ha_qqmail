@@ -5,11 +5,13 @@
 
 ```
 
+# 配置后生成【ha_qqmail.notify】服务
 ha_qqmail:
   qq: QQ号码
   code: QQ邮箱授权码
 
 ```
+
 
 
 # 更新日志
