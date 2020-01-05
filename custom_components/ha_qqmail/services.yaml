@@ -1,0 +1,15 @@
+notify:
+  description: QQ邮件通知提醒
+  fields:
+    email:
+      description: 【非必填】如果不填，发送给自己
+      example: '635147515@qq.com'
+    title:
+      description: 【必填】邮件标题
+      example: '邮件标题'
+    message:
+      description: 【必填】要提醒的文字（可以为HTML格式和使用系统模板）
+      example: '<b>当前时间： {{now()}} </b>'
+    action:
+      description: 【非必填】要执行的脚本或自动化实体
+      example: 'automation.gong_jiao_dao_zhan_bo_bao'

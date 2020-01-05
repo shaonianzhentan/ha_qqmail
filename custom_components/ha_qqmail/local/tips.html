@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>HomeAssistant通知提醒</title>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <style>
+        body {
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .title {
+            padding: 20px 0;
+            background: #03a9f4;
+            color: white;
+        }
+
+        .content {
+            padding: 50px 0;
+        }
+
+        span {
+            color: gray;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title">
+        HomeAssistant通知提醒
+    </div>
+    <div class="content">
+        <span class="entity_id"></span>
+        <h3 id="msg">
+
+        </h3>
+
+    </div>
+
+    <hr />
+    <span>
+        通知来自 ha_cloud_music
+    </span>
+    <script>
+        const search = new URLSearchParams(location.search)
+        document.querySelector(".entity_id").innerText = search.get('id')
+        document.querySelector("#msg").innerText = search.get('msg')
+    </script>
+</body>
+
+</html>

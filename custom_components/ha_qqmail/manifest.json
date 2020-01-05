@@ -1,0 +1,8 @@
+{
+    "domain": "ha_qqmail",
+    "name": "ha_qqmail",
+    "documentation": "https://github.com/shaonianzhentan/ha_qqmail",
+    "requirements": [],
+    "dependencies": [],
+    "codeowners": []
+  }
