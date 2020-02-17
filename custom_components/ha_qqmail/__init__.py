@@ -2,7 +2,6 @@ import os
 import uuid
 import urllib.parse
 import logging
-from homeassistant.helpers import template
 from homeassistant.components.http import HomeAssistantView
 from aiohttp import web
 # ----------邮件相关---------- #
@@ -22,8 +21,8 @@ from .api_msg import ApiMsg
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_qqmail'
-VERSION = '1.0'
-URL = '/' + DOMAIN+'-api-' + str(uuid.uuid4())
+VERSION = '1.1'
+URL = '/' + DOMAIN + '-api-' + str(uuid.uuid4())
 ROOT_PATH = '/' + DOMAIN +'-local/' + VERSION
 
 def setup(hass, config):
@@ -58,7 +57,8 @@ class QQMail:
         self.from_addr = from_addr
         self.password = password
         self._hass = hass
-    
+        self.log = _LOGGER.info
+
     def sendMail(self, to_addr, _title, _message):
         try:
             from_addr = self.from_addr
@@ -77,14 +77,6 @@ class QQMail:
             _LOGGER.info('【' + _title + '】邮件通知发送失败')
             _LOGGER.info(e)
 
-    # 模板解析
-    def template(self, _message):
-        # 解析模板
-        tpl = template.Template(_message, self._hass)
-        _message = tpl.async_render(None)
-        _LOGGER.info('模板解析后的结果：' + _message)
-        return _message
-
 
     def notify(self, call):
         data = call.data
@@ -100,10 +92,10 @@ class QQMail:
             _action = data['action']
             # _message = _message + '<br/><br/><a href="' + hass.config.api.base_url.strip('/') + URL + '?action=' +  call.data['action'] + '" style="background:#03a9f4;color:white;padding:15px 0;text-decoration:none;display:block;text-align:center;">执行命令</a>' 
         
-        _message = self.api_msg(_message, _entity, _action, hass.config.api.base_url.strip('/') + URL)
+        _message = self.api_msg.default(_message, _entity, _action, hass.config.api.base_url.strip('/') + URL)
 
-        if 'email' in _data and _data['email'] != None and _data['email'] != '':
-            from_addr = _data['email']
+        if 'email' in data and data['email'] != None and data['email'] != '':
+            from_addr = data['email']
             
         # 发送邮件
         self.sendMail(from_addr, _title, _message)
@@ -126,3 +118,5 @@ class HassGateView(HomeAssistantView):
             elif arr[0] == 'automation':
                 await hass.services.async_call('automation', 'trigger', {'entity_id': _action})
             return web.HTTPFound(location= ROOT_PATH + '/tips.html?msg=执行成功&id=' + _action)
+        else:
+            return self.json({'code': '401', 'msg': '参数不正确'})
