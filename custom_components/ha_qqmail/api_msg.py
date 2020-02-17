@@ -23,12 +23,14 @@ class ApiMsg():
             return self.template(msg)
 
         _entity = ''
-        for item in entity.split(','):
-            _entity += "'" + item.strip() + "',"
+        if entity is not None:
+            for item in entity.split(','):
+                _entity += "'" + item.strip() + "',"
 
         _action = ''
-        for item in action.split(','):
-            _action += "'" + item.strip() + "',"
+        if action is not None:
+            for item in action.split(','):
+                _action += "'" + item.strip() + "',"
 
         # 生成md5文件
 
