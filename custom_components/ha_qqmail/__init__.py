@@ -17,12 +17,14 @@ def _format_addr(s):
     return formataddr((Header(name, 'utf-8').encode(), addr))
 # ----------邮件相关---------- #
 
+from .api_msg import ApiMsg
+
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_qqmail'
 VERSION = '1.0'
-URL = '/'+DOMAIN+'-api-'+ str(uuid.uuid4())
-ROOT_PATH = URL + '/' + VERSION
+URL = '/' + DOMAIN+'-api-' + str(uuid.uuid4())
+ROOT_PATH = '/' + DOMAIN +'-local/' + VERSION
 
 def setup(hass, config):
     # 显示插件信息
@@ -44,6 +46,7 @@ def setup(hass, config):
     _code = cfg.get('code')
 
     qqmail = QQMail(hass, _qq, _code)
+    qqmail.api_msg = ApiMsg(hass, qqmail)
     hass.services.register(DOMAIN, 'notify', qqmail.notify)
 
     hass.http.register_view(HassGateView)
@@ -74,20 +77,31 @@ class QQMail:
             _LOGGER.info('【' + _title + '】邮件通知发送失败')
             _LOGGER.info(e)
 
-    def notify(self, call):
-        _data = call.data
-        hass = self._hass
-        from_addr = self.from_addr
-        _title = call.data['title']
-        _message = call.data['message']
+    # 模板解析
+    def template(self, _message):
         # 解析模板
-        tpl = template.Template(_message, hass)
+        tpl = template.Template(_message, self._hass)
         _message = tpl.async_render(None)
         _LOGGER.info('模板解析后的结果：' + _message)
-        # 执行命令
-        if 'action' in _data:
-            _message = _message + '<br/><br/><a href="' + hass.config.api.base_url.strip('/') + URL + '?action=' +  call.data['action'] + '" style="background:#03a9f4;color:white;padding:15px 0;text-decoration:none;display:block;text-align:center;">执行命令</a>' 
+        return _message
+
+
+    def notify(self, call):
+        data = call.data
+        hass = self._hass
+        from_addr = self.from_addr
+        _title = data['title']
+        _message = data['message']
+        _entity = None
+        _action = None
+        if 'entity' in data:
+            _entity = data['entity']
+        if 'action' in data:
+            _action = data['action']
+            # _message = _message + '<br/><br/><a href="' + hass.config.api.base_url.strip('/') + URL + '?action=' +  call.data['action'] + '" style="background:#03a9f4;color:white;padding:15px 0;text-decoration:none;display:block;text-align:center;">执行命令</a>' 
         
+        _message = self.api_msg(_message, _entity, _action, hass.config.api.base_url.strip('/') + URL)
+
         if 'email' in _data and _data['email'] != None and _data['email'] != '':
             from_addr = _data['email']
             

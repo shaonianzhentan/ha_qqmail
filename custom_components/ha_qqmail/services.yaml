@@ -10,6 +10,9 @@ notify:
     message:
       description: 【必填】要提醒的文字（可以为HTML格式和使用系统模板）
       example: '<b>当前时间： {{now()}} </b>'
+    entity:
+      description: 【非必填】实体列表，多个实体以英文逗号分隔
+      example: 'device_tracker.wo_de_shou_ji,media_player.ha_cloud_music'
     action:
-      description: 【非必填】要执行的脚本或自动化实体
-      example: 'automation.gong_jiao_dao_zhan_bo_bao'
+      description: 【非必填】要执行的脚本或自动化实体，多个实体以英文逗号分隔
+      example: 'automation.gong_jiao_dao_zhan_bo_bao, script.1577623933610'
