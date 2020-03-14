@@ -24,12 +24,20 @@ class ApiMsg():
 
         _entity = ''
         if entity is not None:
-            for item in entity.split(','):
+            if isinstance(entity, list):
+                arr = entity
+            else:
+                arr = entity.split(',')
+            for item in arr:
                 _entity += "'" + item.strip() + "',"
 
         _action = ''
         if action is not None:
-            for item in action.split(','):
+            if isinstance(action, list):
+                arr = action
+            else:
+                arr = action.split(',')
+            for item in arr:
                 _action += "'" + item.strip() + "',"
 
         # 生成md5文件
@@ -46,7 +54,7 @@ class ApiMsg():
                 {% for id in arr -%}
                 <div style="display: flex; justify-content: space-between; border-top:1px solid #eee;padding:10px 20px;">
                     <span>{{states[id].attributes.friendly_name}}</span>
-                    <span>{{ states(id) }}</span>
+                    <span style="color:#03a9f4;">{{ states(id) }}</span>
                 </div>
                 {%- endfor %}
             </div>

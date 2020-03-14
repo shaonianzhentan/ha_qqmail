@@ -21,7 +21,7 @@ from .api_msg import ApiMsg
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_qqmail'
-VERSION = '1.1'
+VERSION = '1.2'
 URL = '/' + DOMAIN + '-api-' + str(uuid.uuid4())
 ROOT_PATH = '/' + DOMAIN +'-local/' + VERSION
 
@@ -43,8 +43,9 @@ def setup(hass, config):
 
     _qq = str(cfg.get('qq')) + '@qq.com'
     _code = cfg.get('code')
+    base_url = cfg.get('ha_base_url', hass.config.api.base_url)
 
-    qqmail = QQMail(hass, _qq, _code)
+    qqmail = QQMail(hass, _qq, _code, base_url)
     qqmail.api_msg = ApiMsg(hass, qqmail)
     hass.services.register(DOMAIN, 'notify', qqmail.notify)
 
@@ -53,9 +54,10 @@ def setup(hass, config):
 
 class QQMail:
 
-    def __init__(self, hass, from_addr, password):
+    def __init__(self, hass, from_addr, password, base_url):
         self.from_addr = from_addr
         self.password = password
+        self.base_url = base_url
         self._hass = hass
         self.log = _LOGGER.info
 
@@ -82,21 +84,20 @@ class QQMail:
         data = call.data
         hass = self._hass
         from_addr = self.from_addr
-        _title = data['title']
-        _message = data['message']
+        _title = data.get('title', '')
+        _message = data.get('message', '')
+        _email = data.get('email', '')
         _entity = None
         _action = None
         if 'entity' in data:
             _entity = data['entity']
         if 'action' in data:
             _action = data['action']
-            # _message = _message + '<br/><br/><a href="' + hass.config.api.base_url.strip('/') + URL + '?action=' +  call.data['action'] + '" style="background:#03a9f4;color:white;padding:15px 0;text-decoration:none;display:block;text-align:center;">执行命令</a>' 
-        
-        _message = self.api_msg.default(_message, _entity, _action, hass.config.api.base_url.strip('/') + URL)
+        _message = self.api_msg.default(_message, _entity, _action, self.base_url.strip('/') + URL)
 
-        if 'email' in data and data['email'] != None and data['email'] != '':
+        if _email != '':
             from_addr = data['email']
-            
+                  
         # 发送邮件
         self.sendMail(from_addr, _title, _message)
     
