@@ -31,7 +31,9 @@ def setup(hass, config):
 -------------------------------------------------------------------
     QQ邮箱通知插件【作者QQ：635147515】
     
-    版本：''' + VERSION + '''    
+    版本：''' + VERSION + '''
+
+    API地址：''' + URL + '''
         
     项目地址：https://github.com/shaonianzhentan/ha_qqmail
 -------------------------------------------------------------------''')
@@ -47,7 +49,9 @@ def setup(hass, config):
 
     qqmail = QQMail(hass, _qq, _code, base_url)
     qqmail.api_msg = ApiMsg(hass, qqmail)
-    hass.services.register(DOMAIN, 'notify', qqmail.notify)
+
+    if hass.services.has_service(DOMAIN, 'notify') == False:
+        hass.services.register(DOMAIN, 'notify', qqmail.notify)
 
     hass.http.register_view(HassGateView)
     return True
