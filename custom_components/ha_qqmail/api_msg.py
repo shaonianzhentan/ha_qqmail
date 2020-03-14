@@ -18,10 +18,6 @@ class ApiMsg():
     # 默认消息
     def default(self, message, entity, action, base_url):
         
-        # 只有消息
-        if entity is None and action is None:            
-            return self.template(message)
-
         _entity = ''
         if entity is not None:
             if isinstance(entity, list):
@@ -39,6 +35,10 @@ class ApiMsg():
                 arr = action.split(',')
             for item in arr:
                 _action += "'" + item.strip() + "',"
+
+        # 只有消息
+        if _entity == '' and _action  == '':
+            return self.template(message)
 
         return self.template('''
         <div style="box-shadow: 0 1px 2px #aaa;">
