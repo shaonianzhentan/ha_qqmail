@@ -16,11 +16,11 @@ class ApiMsg():
         return _message
 
     # 默认消息
-    def default(self, title, entity, action, base_url):
+    def default(self, message, entity, action, base_url):
         
         # 只有消息
         if entity is None and action is None:            
-            return self.template(msg)
+            return self.template(message)
 
         _entity = ''
         if entity is not None:
@@ -40,14 +40,10 @@ class ApiMsg():
             for item in arr:
                 _action += "'" + item.strip() + "',"
 
-        # 生成md5文件
-
-        # 传入md5
-
-        msg = '''
+        return self.template('''
         <div style="box-shadow: 0 1px 2px #aaa;">
             <div style="padding:20px 20px 0 20px;font-weight:bold;font-size:20px;">
-                ''' + title + '''
+                ''' + message + '''
             </div>
             <div style="padding:20px;border-bottom:1px solid #ddd;">        
                 {% set arr = [''' + _entity.strip(',') + '''] %}
@@ -67,5 +63,4 @@ class ApiMsg():
             {%- endfor %}
             </div>
         </div>
-        '''
-        return self.template(msg)
+        ''')
