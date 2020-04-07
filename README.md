@@ -3,7 +3,7 @@
 
 # 使用方式
 
-```
+```yaml
 
 # 配置后生成【ha_qqmail.notify】服务
 ha_qqmail:
@@ -13,8 +13,8 @@ ha_qqmail:
 
 ```
 
-调用服务格式
-```
+> 调用服务格式
+```yaml
 title: 门口的灯还没有关掉
 message: 已经十点了，灯还没有关掉哦，是不是搞忘记了？
 data:
@@ -23,6 +23,16 @@ data:
       title: 关灯
     - action: close_all
       title: 关掉全部灯
+```
+
+> 获取点击事件(参考链接：https://www.home-assistant.io/integrations/html5/)
+```yaml
+- alias: HTML5 push notification action button clicked
+  trigger:
+    platform: event
+    event_type: html5_notification.clicked
+    event_data:
+      action: close_light
 ```
 
 # 更新日志
