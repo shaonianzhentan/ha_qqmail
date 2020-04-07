@@ -24,19 +24,10 @@ class ApiMsg():
                 _action += '<a href="' + base_url + '?action=' + item['action'] + '''" style="background: #03a9f4;color: white;text-decoration: none;width: 50%; padding: 10px;margin: 5px;">
 ''' + item['title'] + '</a>'
 
-        # 只有消息
-        if _action  == '':
-            return self.template(message)
-
         return self.template('''
 <div style="padding:10px; box-shadow: 1px 1px 5px silver; border-radius:5px;">
-	<h3 style="padding:5px;margin:0;">
-		''' + title + '''
-	</h3>
-	<div style="padding:20px 5px;">
-		''' + message + '''
-	</div>
-	<div style="display:flex;text-align:center;">
-	''' + _action + '''</div>
+	<h3 style="padding:5px;margin:0;">''' + title + '''</h3>
+	<div style="padding:20px 5px;">	''' + message + '''</div>
+	<div style="display:flex;text-align:center;">''' + _action + '''</div>
 </div>
         ''')
