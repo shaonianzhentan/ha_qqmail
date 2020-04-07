@@ -21,7 +21,7 @@ from .api_msg import ApiMsg
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_qqmail'
-VERSION = '1.1'
+VERSION = '1.1.1'
 URL = '/' + DOMAIN + '-api-' + str(uuid.uuid4())
 ROOT_PATH = '/' + DOMAIN +'-local/' + VERSION
 
@@ -91,13 +91,9 @@ class QQMail:
         _title = data.get('title', '')
         _message = data.get('message', '')
         _email = data.get('email', '')
-        _entity = None
-        _action = None
-        if 'entity' in data:
-            _entity = data['entity']
-        if 'action' in data:
-            _action = data['action']
-        _message = self.api_msg.default(_message, _entity, _action, self.base_url.strip('/') + URL)
+        _data = data.get('data', [])
+
+        _message = self.api_msg.default(_title, _message, _data, self.base_url.strip('/') + URL)
 
         if _email != '':
             from_addr = data['email']
@@ -105,7 +101,6 @@ class QQMail:
         # 发送邮件
         self.sendMail(from_addr, _title, _message)
     
-
 class HassGateView(HomeAssistantView):
 
     url = URL
@@ -116,12 +111,9 @@ class HassGateView(HomeAssistantView):
         # 这里进行重定向
         hass = request.app["hass"]
         if 'action' in request.query:
-            _action = urllib.parse.unquote(request.query['action'])
-            arr = _action.split('.', 1)
-            if arr[0] == 'script':
-                await hass.services.async_call('script', str(arr[1]))
-            elif arr[0] == 'automation':
-                await hass.services.async_call('automation', 'trigger', {'entity_id': _action})
-            return web.HTTPFound(location= ROOT_PATH + '/tips.html?msg=执行成功&id=' + _action)
+            action = request.query['action']
+            # 触发事件
+            hass.bus.fire("html5_notification.clicked", {"action": action})
+            return web.HTTPFound(location= ROOT_PATH + '/tips.html?msg=触发事件成功&id=' + action)
         else:
             return self.json({'code': '401', 'msg': '参数不正确'})

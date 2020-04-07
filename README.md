@@ -15,18 +15,21 @@ ha_qqmail:
 
 调用服务格式
 ```
-entity:
-  - light.men_kou_de_diao_deng
-  - light.fang_jian_de_deng
-action:
-  - automation.guan_diao_deng
-  - automation.guan_fang_jian_de_deng
-message: '已经十点了，灯还没有关掉哦，是不是搞忘记了？'
 title: 门口的灯还没有关掉
-
+message: 已经十点了，灯还没有关掉哦，是不是搞忘记了？
+data:
+  actions:
+    - action: close_light
+      title: 关灯
+    - action: close_all
+      title: 关掉全部灯
 ```
 
 # 更新日志
+
+
+### v1.2
+- 重新邮件通知逻辑，兼容html5通知
 
 ### v1.1
 - 支持执行多个脚本或自动化

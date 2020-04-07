@@ -16,51 +16,27 @@ class ApiMsg():
         return _message
 
     # 默认消息
-    def default(self, message, entity, action, base_url):
+    def default(self, title, message, data, base_url):
         
-        _entity = ''
-        if entity is not None:
-            if isinstance(entity, list):
-                arr = entity
-            else:
-                arr = entity.split(',')
-            for item in arr:
-                _entity += "'" + item.strip() + "',"
-
         _action = ''
-        if action is not None:
-            if isinstance(action, list):
-                arr = action
-            else:
-                arr = action.split(',')
-            for item in arr:
-                _action += "'" + item.strip() + "',"
+        if 'actions' in data:
+            for item in data['actions']:
+                _action += '<a href="' + base_url + '?action=' + item['action'] + '''" style="background: #03a9f4;color: white;text-decoration: none;width: 50%; padding: 10px;margin: 5px;">
+''' + item['title'] + '</a>'
 
         # 只有消息
-        if _entity == '' and _action  == '':
+        if _action  == '':
             return self.template(message)
 
         return self.template('''
-        <div style="box-shadow: 0 1px 2px #aaa;">
-            <div style="padding:20px 20px 0 20px;font-weight:bold;font-size:20px;">
-                ''' + message + '''
-            </div>
-            <div style="padding:20px;border-bottom:1px solid #ddd;">        
-                {% set arr = [''' + _entity.strip(',') + '''] %}
-                {% for id in arr -%}
-                <div style="display: flex; justify-content: space-between; border-top:1px solid #eee;padding:10px 20px;">
-                    <span>{{states[id].attributes.friendly_name}}</span>
-                    <span style="color:#03a9f4;">{{ states(id) }}</span>
-                </div>
-                {%- endfor %}
-            </div>
-            <div style="text-align: right;padding:0 10px 10px 10px;">
-            {% set arr = [''' + _action.strip(',') + '''] %}
-            {% for id in arr -%}
-            <a href="''' + base_url + '''?action={{id}}" style="display:inline-block;padding:10px 20px;margin-left:10px;margin-top:10px;background:#03a9f4;color:white;text-decoration: none;font-size:14px;">
-            {{states[id].attributes.friendly_name}}
-            </a>
-            {%- endfor %}
-            </div>
-        </div>
+<div style="padding:10px; box-shadow: 1px 1px 5px silver; border-radius:5px;">
+	<h3 style="padding:5px;margin:0;">
+		''' + title + '''
+	</h3>
+	<div style="padding:20px 5px;">
+		''' + message + '''
+	</div>
+	<div style="display:flex;text-align:center;">
+	''' + _action + '''</div>
+</div>
         ''')
