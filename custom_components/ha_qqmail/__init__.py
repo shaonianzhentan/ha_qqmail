@@ -21,7 +21,7 @@ from .api_msg import ApiMsg
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_qqmail'
-VERSION = '1.2'
+VERSION = '1.2.1'
 URL = '/' + DOMAIN + '-api-' + str(uuid.uuid4())
 ROOT_PATH = '/' + DOMAIN +'-local/' + VERSION
 
