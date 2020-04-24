@@ -93,7 +93,7 @@ class QQMail:
         _email = data.get('email', '')
         _data = data.get('data', [])
 
-        _message = self.api_msg.default(_title, _message, _data, self.base_url.strip('/') + URL)
+        _message = self.api_msg.default(_title, _message, _data, self.base_url.strip('/'), URL)
 
         if _email != '':
             from_addr = data['email']
