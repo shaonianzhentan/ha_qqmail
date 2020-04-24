@@ -43,7 +43,7 @@ class ApiMsg():
                 # 进行图片格式转换
                 entity_id = self.url_to_base64(entity_picture)
             # 生成图片标签
-            message += '<img src="' + entity_id + '" style="max-width:100%;" />'
+            message += '<img src="' + entity_id + '" style="max-width:100%;display:block;" />'
 
         return self.template('''
 <div style="padding:10px; box-shadow: 1px 1px 5px silver; border-radius:5px;">
