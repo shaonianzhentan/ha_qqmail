@@ -9,15 +9,16 @@
 ha_qqmail:
   qq: QQ号码
   code: QQ邮箱授权码
-  ha_base_url: https://xxx.xxx.com（外网地址，默认本机局域网地址）
 
 ```
 
 > 调用服务格式
 ```yaml
-title: 门口的灯还没有关掉
-message: 已经十点了，灯还没有关掉哦，是不是搞忘记了？
+title: 标题
+message: 消息内容
 data:
+  url: https://github.com/shaonianzhentan/ha_qqmail
+  image: https://vuejs.org/images/logo.png
   actions:
     - action: close_light
       title: 关灯
@@ -27,7 +28,7 @@ data:
 
 > 获取点击事件(参考链接：https://www.home-assistant.io/integrations/html5/)
 ```yaml
-- alias: HTML5 push notification action button clicked
+- alias: 这是一个H5的通知提示
   trigger:
     platform: event
     event_type: html5_notification.clicked
@@ -37,6 +38,12 @@ data:
 
 # 更新日志
 
+
+### v1.3
+- 重构代码逻辑
+- 删除外网链接配置
+- 兼容摄像头实体ID和图片
+- 新增url参数，点击标题可以跳转指定链接
 
 ### v1.2.1
 - 加入图片发送
