@@ -56,6 +56,7 @@ class QQMail:
     def notify(self, call):
         data = call.data
         # 读取服务参数
+        _type = data.get('type', '')
         _email = data.get('email', self.from_addr)
         _title = data.get('title', '')
         _message = self.template(data.get('message', ''))
@@ -103,8 +104,27 @@ class QQMail:
             _LOGGER.info('URL链接地址：' + data['url'])
             _title = '<a href="' + data['url'] + '" style="color:#03a9f4;text-decoration: none;">' + _title + '</a>'
 
+        # 如果类型是状态，则查询全部状态
+        if _type == 'state':
+            _message += self.template('''
+            <table border="1px solid #eee" cellspacing="2" cellpadding="10" width="100%" style="width:100%;text-align:left;">
+                <tr>
+                    <th>设备类型</th>
+                    <th>实体名称</th>
+                    <th>状态</th>
+                </tr>
+                {% for state in states -%}
+                <tr style="background-color:{% if is_state(state.entity_id, "on") -%}yellow{%- else -%}white{%- endif %};" >
+                    <td>{{ state.domain }}</td>
+                    <td>{{ state.name }}</td>
+                    <td>{{state.state}}</td>
+                </tr>
+                {%- endfor %}
+            </table>
+            ''')
         # 读取消息模板
         template_info = self.getContent(self.hass.config.path("custom_components/ha_qqmail/local/template/info.html"))
+
         # 替换标题和信息，重新生成消息
         _message = template_info.replace('{TITLE}', _title).replace('{CONTENT}', _message).replace('{BUTTON}', _action)
         # 发送邮件
