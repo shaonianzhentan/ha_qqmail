@@ -1,7 +1,7 @@
 import os
 import uuid
 
-# from homeassistant.helpers.network import get_url
+from homeassistant.helpers.network import get_url
 from homeassistant.components.http import HomeAssistantView
 from aiohttp import web
 from .qqmail import QQMail
@@ -34,13 +34,8 @@ def setup(hass, config):
     cfg  = config[DOMAIN]
     _qq = str(cfg.get('qq')) + '@qq.com'
     _code = cfg.get('code')
-    # 默认使用自定义的外部链接
-    base_url = hass.config.external_url
-    # 如果未定义，则使用内网链接
-    if base_url is None:
-        base_url = hass.config.internal_url
-        if base_url is None:
-            base_url = hass.config.api.base_url
+    
+    base_url = get_url(hass)
     # 定义QQ邮箱实例
     qm = QQMail(hass, _qq, _code, base_url.strip('/') + URL)
     # 设置QQ邮箱通知服务
