@@ -32,12 +32,13 @@ class QQMail:
             smtp_server = 'smtp.qq.com'
             msg = MIMEText(_message, 'html', 'utf-8')
             msg['From'] = _format_addr('HomeAssistant <%s>' % from_addr)
-            msg['To'] = _format_addr('智能家居 <%s>' % to_addr)
+            #msg['To'] = _format_addr('智能家居 <%s>' % to_addr)
+            msg['To'] = ','.join(to_addr)
             msg['Subject'] = Header(_title, 'utf-8').encode()
             server = smtplib.SMTP(smtp_server, 25)
             server.set_debuglevel(1)
             server.login(from_addr, self.password)
-            server.sendmail(from_addr, [to_addr], msg.as_string())
+            server.sendmail(from_addr, to_addr, msg.as_string())
             server.quit()            
             _LOGGER.info('【' + _title + '】邮件通知发送成功')
         except Exception as e:
@@ -58,6 +59,8 @@ class QQMail:
         # 读取服务参数
         _type = data.get('type', '')
         _email = data.get('email', self.from_addr)
+        if not isinstance(_email,list):
+            _email = [_email]
         _title = data.get('title', '')
         _message = self.template(data.get('message', ''))
         _data = data.get('data', [])
