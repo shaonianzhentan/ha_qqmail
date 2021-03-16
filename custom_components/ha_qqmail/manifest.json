@@ -1,6 +1,7 @@
 {
     "domain": "ha_qqmail",
-    "name": "ha_qqmail",
+    "name": "QQ\u90AE\u7BB1\u901A\u77E5",
+    "version": "1.0",
     "documentation": "https://github.com/shaonianzhentan/ha_qqmail",
     "requirements": [],
     "dependencies": [],
