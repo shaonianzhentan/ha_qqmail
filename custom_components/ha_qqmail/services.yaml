@@ -1,18 +1,33 @@
 notify:
   description: QQ邮件通知提醒
   fields:
-    type: 
+    type:
+      name: 邮件类型
       description: '【非必填】state: 显示全部实体状态' 
       example: state
+      selector:
+        text:
     email:
+      name: 邮件地址
       description: 【非必填】如果不填，发送给自己
       example: '635147515@qq.com'
+      selector:
+        text:
     title:
+      name: 邮件标题
       description: 【必填】邮件标题
-      example: '邮件标题'
+      example: 邮件标题
+      selector:
+        text:
     message:
+      name: 邮件内容
       description: 【非必填】要提醒的文字（可以为HTML格式和使用系统模板）
       example: '<b>当前时间： {{now()}} </b>'
+      selector:
+        text:
     data:
+      name: 额外数据
       description: 通知参考链接：https://www.home-assistant.io/integrations/html5/
       example: ''
+      selector:
+        text:
