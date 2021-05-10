@@ -1,0 +1,17 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "项目: https://github.com/shaonianzhentan/ha_qqmail",
+                "data": {
+                    "qq": "QQ号码",
+                    "code": "QQ邮箱授权码"
+                }
+            }
+        },
+        "error": {},
+        "abort": {
+            "single_instance_allowed": "仅允许单个配置."
+        }
+    }
+}

@@ -1,20 +1,18 @@
-import os
-import uuid
+import os, uuid, logging
 
 from homeassistant.helpers.network import get_url
 from homeassistant.components.http import HomeAssistantView
 from aiohttp import web
 from .qqmail import QQMail
 
-import logging
+from .const import DOMAIN, VERSION, URL, ROOT_PATH
+
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = 'ha_qqmail'
-VERSION = '1.4'
-URL = '/' + DOMAIN + '-api-' + str(uuid.uuid4())
-ROOT_PATH = '/' + DOMAIN +'-local/' + VERSION
-
 def setup(hass, config):
+    # 没有配置和已经运行则不操作
+    if DOMAIN not in config or DOMAIN in hass.data:
+        return True
     # 显示插件信息
     _LOGGER.info('''
 -------------------------------------------------------------------
@@ -26,23 +24,25 @@ def setup(hass, config):
         
     项目地址：https://github.com/shaonianzhentan/ha_qqmail
 -------------------------------------------------------------------''')
-    # 注册静态目录
-    local = hass.config.path('custom_components/'+DOMAIN+'/local')
-    if os.path.isdir(local):
-        hass.http.register_static_path(ROOT_PATH, local, False)
     # 读取配置    
     cfg  = config[DOMAIN]
     _qq = str(cfg.get('qq')) + '@qq.com'
     _code = cfg.get('code')
-    
-    base_url = get_url(hass)
     # 定义QQ邮箱实例
-    qm = QQMail(hass, _qq, _code, base_url.strip('/') + URL)
+    qm = QQMail(hass, _qq, _code, get_url(hass).strip('/') + URL)
+    hass.data[DOMAIN] = qm
     # 设置QQ邮箱通知服务
     if hass.services.has_service(DOMAIN, 'notify') == False:
         hass.services.register(DOMAIN, 'notify', qm.notify)
+    # 注册静态目录
+    hass.http.register_static_path(ROOT_PATH, hass.config.path('custom_components/' + DOMAIN + '/local'), False)    
     # 注册事件网关
     hass.http.register_view(HassGateView)
+    return True
+
+# 集成安装
+async def async_setup_entry(hass, entry):
+    setup(hass, { DOMAIN: entry.data })
     return True
 
 class HassGateView(HomeAssistantView):
