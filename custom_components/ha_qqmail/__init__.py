@@ -33,7 +33,7 @@ def setup(hass, config):
     hass.data[DOMAIN] = qm
     # 设置QQ邮箱通知服务
     if hass.services.has_service(DOMAIN, 'notify') == False:
-        hass.services.register(DOMAIN, 'notify', qm.notify)
+        hass.services.async_register(DOMAIN, 'notify', qm.notify)
     # 注册静态目录
     hass.http.register_static_path(ROOT_PATH, hass.config.path('custom_components/' + DOMAIN + '/local'), False)    
     # 注册事件网关
