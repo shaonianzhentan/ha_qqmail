@@ -28,8 +28,15 @@ def setup(hass, config):
     cfg  = config[DOMAIN]
     _qq = str(cfg.get('qq')) + '@qq.com'
     _code = cfg.get('code')
+    # 默认使用自定义的外部链接
+    base_url = hass.config.external_url
+    # 如果未定义，则使用内网链接
+    if base_url is None:
+        base_url = hass.config.internal_url
+        if base_url is None:
+            base_url = hass.config.api.base_url
     # 定义QQ邮箱实例
-    qm = QQMail(hass, _qq, _code, get_url(hass).strip('/') + URL)
+    qm = QQMail(hass, _qq, _code, base_url.strip('/') + URL)
     hass.data[DOMAIN] = qm
     # 设置QQ邮箱通知服务
     if hass.services.has_service(DOMAIN, 'notify') == False:
