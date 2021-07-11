@@ -12,7 +12,9 @@ _LOGGER = logging.getLogger(__name__)
 def setup(hass, config):
     # 没有配置和已经运行则不操作
     if DOMAIN not in config or DOMAIN in hass.data:
-        return True
+        return True    
+    # 默认使用自定义的外部链接
+    base_url = get_url(hass).strip('/')
     # 显示插件信息
     _LOGGER.info('''
 -------------------------------------------------------------------
@@ -21,6 +23,8 @@ def setup(hass, config):
     版本：''' + VERSION + '''
 
     API地址：''' + URL + '''
+
+    HA地址：''' + base_url + '''
         
     项目地址：https://github.com/shaonianzhentan/ha_qqmail
 -------------------------------------------------------------------''')
@@ -28,15 +32,8 @@ def setup(hass, config):
     cfg  = config[DOMAIN]
     _qq = str(cfg.get('qq')) + '@qq.com'
     _code = cfg.get('code')
-    # 默认使用自定义的外部链接
-    base_url = hass.config.external_url
-    # 如果未定义，则使用内网链接
-    if base_url is None:
-        base_url = hass.config.internal_url
-        if base_url is None:
-            base_url = hass.config.api.base_url
     # 定义QQ邮箱实例
-    qm = QQMail(hass, _qq, _code, base_url.strip('/') + URL)
+    qm = QQMail(hass, _qq, _code, base_url + URL)
     hass.data[DOMAIN] = qm
     # 设置QQ邮箱通知服务
     if hass.services.has_service(DOMAIN, 'notify') == False:
