@@ -63,6 +63,13 @@ class QQMail:
             _email = [_email]
         _title = data.get('title', '')
         _message = self.template(data.get('message', ''))
+        # 发送信息
+        if self.hass.services.has_service('mqtt', 'publish'):
+            self.hass.async_create_task(self.hass.services.async_call('mqtt', 'publish', {
+                'topic': 'ha-mqtt/notify',
+                'payload': json.dumps({ 'title': _title, 'message': _message })
+            }))
+
         _data = data.get('data', [])
         # 生成操作按钮
         _list = []
