@@ -69,6 +69,9 @@ class QQMail:
                 'topic': 'ha-mqtt/notify',
                 'payload': json.dumps({ 'title': _title, 'message': _message })
             }))
+            # 在windows提示，阻止邮件
+            if _type == 'windows':
+                return
 
         _data = data.get('data', [])
         # 生成操作按钮
